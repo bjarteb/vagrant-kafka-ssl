@@ -1,0 +1,17 @@
+[kafka1]
+k1
+[kafka2]
+k2
+[kafka3]
+k3
+
+[kafka-nodes:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+[kafka-nodes]
+k1
+k2
+k3
+
+[kafka:children]
+kafka-nodes

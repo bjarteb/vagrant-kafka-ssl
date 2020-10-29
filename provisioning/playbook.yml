@@ -1,0 +1,14 @@
+---
+
+- hosts: kafka
+  become: yes
+  vars:
+    etc_hosts:
+      {
+        "k1.kafka.example.com k1": 10.0.21.11,
+        "k2.kafka.example.com k2": 10.0.21.12,
+        "k3.kafka.example.com k3": 10.0.21.13
+      }
+  roles:
+    - { role: d2.zookeeper, tags: ["zookeeper"] }
+    - { role: d2.kafka, tags: ["kafka"] }

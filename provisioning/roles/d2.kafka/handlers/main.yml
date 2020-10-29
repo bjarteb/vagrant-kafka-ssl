@@ -1,0 +1,4 @@
+---
+- name: kafka restarted wait
+  pause:
+    seconds: 10

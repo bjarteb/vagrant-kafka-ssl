@@ -1,0 +1,6 @@
+---
+
+zookeeper_fqdn: "{{ ansible_hostname }}.kafka.example.com"
+zookeeper_config_dir: /data/zookeeper/config
+zookeeper_data_dir: /data/zookeeper/data
+zookeeper_myid:  "{{ ansible_hostname[1:2] }}"

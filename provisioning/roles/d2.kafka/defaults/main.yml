@@ -1,0 +1,15 @@
+---
+
+kafka_config_dir: "/data/kafka/config"
+kafka_data_dir: "/data/kafka/data"
+kafka_cert_dir: "/data/kafka/certs"
+
+scala_version: "2.12"
+kafka_version: "{{ scala_version }}-2.1.1"
+kafka_advertised_fqdn: "{{ ansible_enp0s8.ipv4.address }}"
+kafka_retention_ms: 604800000 # 7 days
+kafka_zk_ip: "{{ ansible_enp0s8.ipv4.address }}"
+kafka_zk_port: "2181"
+kafka_port: "9092"
+kafka_hostname: "{{ ansible_enp0s8.ipv4.address }}"
+kafka_hostname_fqdn: "{{ ansible_hostname }}.kafka.example.com"

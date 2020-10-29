@@ -1,0 +1,54 @@
+---
+
+- hosts: all
+  vars:
+    packages:
+      - python3-pip
+    pip_modules:
+      - ansible
+      - docker
+      - pip
+
+  tasks:
+    - name: Set timezone to Europe/Oslo
+      when: ansible_date_time.tz != 'Europe/Oslo'
+      command: timedatectl set-timezone Europe/Oslo
+
+    - name: install linux tools
+      apt:
+        pkg: "{{ packages }}"
+        state: present
+
+    - name: install pip modules
+      pip:
+        name: "{{ pip_modules }}"
+        state: latest
+
+    - name: configure /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.line }}"
+      with_items:
+        - { line: "10.0.21.11 k1.kafka.example.com k1" }
+        - { line: "10.0.21.12 k2.kafka.example.com k2" }
+        - { line: "10.0.21.13 k3.kafka.example.com k3" }
+
+    - name: ssh-key configuration
+      copy:
+        src: files/id_rsa
+        dest: /home/vagrant/.ssh
+        owner: vagrant
+        group: vagrant
+        mode: 0400
+
+    - name: add known hosts (ssh-keyscan)
+      become: true
+      become_user: vagrant
+      shell: "ssh-keyscan {{ item }} >> /home/vagrant/.ssh/known_hosts"
+      with_items:
+        - k1
+        - 10.0.21.11
+        - k2
+        - 10.0.21.12
+        - k3
+        - 10.0.21.13

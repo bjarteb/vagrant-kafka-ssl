@@ -1,0 +1,63 @@
+---
+
+- hosts: all
+  become: yes
+  vars:
+    packages:
+      - docker.io
+      - htop
+      - jq
+      - traceroute
+      - python-pip
+      - npm
+      - default-jre
+      - python3-pip
+    pip_modules:
+      - docker
+      - pip
+      - redis
+      - fake2db
+      - kafka-python
+    npm_modules:
+      - redis-random-data-generator
+
+  tasks:
+    - name: Set timezone to Europe/Oslo
+      when: ansible_date_time.tz != 'Europe/Oslo'
+      command: timedatectl set-timezone Europe/Oslo
+
+    - name: install linux tools
+      apt:
+        pkg: "{{ packages }}"
+        state: present
+
+    - name: install pip modules
+      pip:
+        name: "{{ pip_modules }}"
+        state: latest
+
+    - name: install npm modules
+      npm:
+        name: "redis-random-data-generator"
+        global: yes
+        state: latest
+
+    - name: configure /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.line }}"
+      with_items:
+        - { line: "10.0.21.11 k1.kafka.example.com k1" }
+        - { line: "10.0.21.12 k2.kafka.example.com k2" }
+        - { line: "10.0.21.13 k3.kafka.example.com k3" }
+
+    - name: ssh-key configuration
+      copy:
+        src: files/id_rsa.pub
+        dest: /home/vagrant
+        owner: vagrant
+        group: vagrant
+
+    - name: authorized keys
+      shell: "cat /home/vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys"
+

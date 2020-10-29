@@ -1,0 +1,40 @@
+- name: docker login (tv2norge-dockerv2-local.jfrog.io)
+  tags:
+    - docker_login
+  docker_login:
+    registry: tv2norge-dockerv2-local.jfrog.io
+    username: jenkins
+    password: "{{ d2_docker_login_password }}"
+
+- name: docker login (tv2norge-docker-test.jfrog.io)
+  tags:
+    - docker_login
+  docker_login:
+    registry: tv2norge-docker-test.jfrog.io
+    username: jenkins
+    password: "{{ d2_docker_login_password }}"
+
+- name: docker login (tv2norge-docker-stage.jfrog.io)
+  tags:
+    - docker_login
+  docker_login:
+    registry: tv2norge-docker-stage.jfrog.io
+    username: jenkins
+    password: "{{ d2_docker_login_password }}"
+
+- name: docker login (tv2norge-docker.jfrog.io)
+  tags:
+    - docker_login
+  docker_login:
+    registry: tv2norge-docker.jfrog.io
+    username: jenkins
+    password: "{{ d2_docker_login_password }}"
+
+- name: docker login (old url)(tv2norge-docker-dockerv2-local.artifactoryonline.com)
+  tags:
+    - docker_login
+  docker_login:
+    registry: tv2norge-docker-dockerv2-local.artifactoryonline.com
+    username: jenkins
+    password: "{{ d2_docker_login_password }}"
+    state: absent

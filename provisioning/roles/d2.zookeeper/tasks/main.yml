@@ -1,0 +1,41 @@
+---
+
+- name: ensure zookeeper directories
+  file: path="{{ item }}" state="directory" mode="0755"
+  with_items:
+    - "{{ zookeeper_config_dir }}"
+    - "{{ zookeeper_data_dir }}"
+
+- name: ensure server.properties file.
+  template: src="zookeeper.properties.j2" dest="{{ zookeeper_config_dir }}/zookeeper.properties" owner=root group=root mode=0766
+
+- debug:
+    msg: "myid: {{ zookeeper_myid }} {{ ansible_hostname[1:2] }}"
+
+- name: create the myid file
+  copy:
+    content: "{{ zookeeper_myid }}"
+    dest: "{{ zookeeper_data_dir }}/myid"
+    force: yes
+
+- name: Start ZooKeeper docker container
+  docker_container:
+    image: "bjarteb/kafka:2.12-2.1.1"
+    name: "zookeeper"
+    state: started
+    restart: yes
+    restart_policy: always
+    network_mode: host
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    command: /kafka/bin/zookeeper-server-start.sh /kafka/config/zookeeper.properties
+    volumes:
+      - "{{ zookeeper_config_dir }}/zookeeper.properties:/kafka/config/zookeeper.properties:ro"
+      - "{{ zookeeper_data_dir }}:/tmp/zookeeper"
+
+- name: Wait for zookeeper 2181
+  wait_for:
+    host: 0.0.0.0
+    port: 2181
